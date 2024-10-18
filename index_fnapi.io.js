@@ -245,7 +245,7 @@ function saveImage(version = 1) {
   });
 }
 
-const axios = require('axios');  // Добавляем axios для отправки запроса
+import axios from 'axios';  // Импортируем axios
 
 
 // Функция для отправки изображения в Telegram
