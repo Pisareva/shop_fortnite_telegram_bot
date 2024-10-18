@@ -3,7 +3,7 @@ name: Update Fortnite Item Shop Image
 on:
   workflow_dispatch:  # Позволяет запускать workflow вручную
   schedule:
-    - cron: '0 13 * * *'  # Запуск каждый день в 16:00 по Минску
+    - cron: '0 19 * * *'  # Запуск каждый день в 16:00 по Минску
 
 jobs:
   build:
@@ -11,12 +11,12 @@ jobs:
 
     steps:
     - name: Checkout code
-      uses: actions/checkout@v2  # Подключаем код из репозитория
+      uses: actions/checkout@v3  # Подключаем код из репозитория
 
     - name: Set up Node.js
-      uses: actions/setup-node@v2
+      uses: actions/setup-node@v3
       with:
-        node-version: '20.x'  # Установим Node.js версии 20.x
+        node-version: '16'  # Установим Node.js версии 16 и выше
 
     - name: Install dependencies
       run: npm install  # Устанавливаем все зависимости проекта
