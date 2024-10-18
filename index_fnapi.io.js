@@ -243,7 +243,7 @@ function saveImage(version = 1) {
 
 saveImage().then((savedFile) => {
   console.log("[INFO] Изображение магазина создано");
-  if (process.env.UPLOAD_TO_DISCORD_WEBHOOK.toLocaleLowerCase() === 'yes') discordWebhook(savePath, savedFile);
+  //if (process.env.UPLOAD_TO_DISCORD_WEBHOOK.toLocaleLowerCase() === 'yes') discordWebhook(savePath, savedFile);
   if (process.env.UPLOAD_TO_GITHUB.toLocaleLowerCase() === 'yes') gitUpload(savePath, savedFile);
 });
 
