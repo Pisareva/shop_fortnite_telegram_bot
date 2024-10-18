@@ -231,6 +231,10 @@ itemImages.forEach(({ image }) => {
 });
 
 const savePath = './ImagensGeradas/';
+// Проверим, существует ли директория, если нет — создадим её
+if (!fs.existsSync(savePath)) {
+  fs.mkdirSync(savePath, { recursive: true });
+}
 
 function saveImage(version = 1) {
   return new Promise(async (resolve, reject) => {
