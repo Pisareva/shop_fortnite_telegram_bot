@@ -2,7 +2,7 @@ name: Update Fortnite Item Shop Image
 
 on:
   schedule:
-    - cron: '0 13 * * *'  # Запуск каждый день в 13:00 утра по UTC (можно изменить)
+    - cron: '0 13 * * *'  # Запуск каждый день в 16:00 по Минску
 
 jobs:
   build:
