@@ -270,11 +270,4 @@ async function sendImageToTelegram(filePath) {
 
 
 
-// Сохраняем изображение и отправляем его в Telegram
-//saveImage().then((savedFile) => {
- // console.log("[INFO] Изображение магазина создано:", savedFile);
-  
-  // Отправляем изображение в Telegram
-  //sendImageToTelegram(`${savePath}${savedFile}`);
-});
-}
+
