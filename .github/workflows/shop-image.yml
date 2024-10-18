@@ -19,8 +19,9 @@ jobs:
         node-version: '16'  # Установим Node.js версии 16 и выше
 
     - name: Install dependencies
-      run: npm install  # Устанавливаем все зависимости проекта
-      run: npm install form-data  # Установка библиотеки form-data
+  run: |
+    npm install
+    npm install form-data  # Если отдельно нужно установить form-data
 
     - name: Run script
       run: node index_fnapi.io.js  # Запускаем скрипт для генерации и отправки изображения
