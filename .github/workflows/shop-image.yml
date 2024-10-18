@@ -20,6 +20,7 @@ jobs:
 
     - name: Install dependencies
       run: npm install  # Устанавливаем все зависимости проекта
+      run: npm install form-data  # Установка библиотеки form-data
 
     - name: Run script
       run: node index_fnapi.io.js  # Запускаем скрипт для генерации и отправки изображения
