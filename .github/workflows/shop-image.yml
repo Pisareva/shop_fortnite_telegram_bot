@@ -1,0 +1,24 @@
+name: Update Fortnite Item Shop Image
+
+on:
+  schedule:
+    - cron: '0 3 * * *'  # Запуск каждый день в 3:00 утра по UTC (можно изменить)
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+
+    steps:
+    - name: Checkout code
+      uses: actions/checkout@v2  # Подключаем код из репозитория
+
+    - name: Set up Node.js
+      uses: actions/setup-node@v2
+      with:
+        node-version: '20.x'  # Установим Node.js версии 20.x
+
+    - name: Install dependencies
+      run: npm install  # Устанавливаем все зависимости проекта
+
+    - name: Run script
+      run: node index_fnapi.io.js  # Запускаем скрипт для генерации и отправки изображения

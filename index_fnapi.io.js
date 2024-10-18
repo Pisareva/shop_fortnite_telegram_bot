@@ -14,16 +14,16 @@ import { shopItem as shopItemImage, finishProgram } from "./src/utils.js";
 
 console.log("[INFO] Verificando os itens da loja");
 
-const requestHeaders = {}
+const requestHeaders = {};
 if (process.env.FNAPI_IO_TOKEN) requestHeaders.Authorization = process.env.FNAPI_IO_TOKEN;
 
-const shopData = await fetch("https://fortniteapi.io/v2/shop?lang=pt-BR", {
+const shopData = await fetch("https://fortniteapi.io/v2/shop", {
   headers: requestHeaders,
 })
   .then(async (res) => {
     if (res.ok) return await res.json();
     await finishProgram(
-      `[ERROR] O Status Code recebido é direrente do esperado: ${res.status}`
+      `[ERROR] O Status Code recebido é diferente do esperado: ${res.status}`
     );
   })
   .catch((err) => {
@@ -31,11 +31,17 @@ const shopData = await fetch("https://fortniteapi.io/v2/shop?lang=pt-BR", {
   });
 
 const currentDate = shopData.lastUpdate.date.replace(" ", "-").split(`-`);
-const shopItems = shopData.shop;
+let shopItems = shopData.shop;
 
-console.log(`[INFO] Loja verificada, ${shopItems.length} itens encontrados`);
+// *** Фильтрация ненужных предметов ***
+shopItems = shopItems.filter((shopItem) => {
+  const allowedTypes = ['outfit', 'pickaxe', 'emote', 'wrap', 'glider', 'backbling']; // Разрешённые типы предметов
+  return allowedTypes.includes(shopItem.mainType);
+});
 
-console.log("[INFO] Gerando imagem dos itens\n");
+console.log(`[INFO] Loja verificada, ${shopItems.length} предметов найдено`);
+
+console.log("[INFO] Генерация изображения предметов\n");
 
 const missingItemImage = await Jimp.read("./src/images/QuestionMark.png");
 const largeItemOverlay = await Jimp.read("./src/images/LargeOverlay.png");
@@ -73,16 +79,9 @@ shopItems.forEach((shopItem) => {
       }
 
       try {
-        if (shopItem.mainType === "wrap")
-          itemImage = await Jimp.read(
-            firstItem.images.icon ||
-            firstItem.images.featured ||
-            shopItem.displayAssets[0].url
-          );
-        else
-          itemImage = await Jimp.read(
-            shopItem.displayAssets[0].url || firstItem.images.icon
-          );
+        itemImage = await Jimp.read(
+          shopItem.displayAssets[0].url || firstItem.images.icon
+        );
       } catch {
         itemImage = missingItemImage;
       }
@@ -137,7 +136,7 @@ shopItems.forEach((shopItem) => {
 
       itemBackground.blit(priceTag, 128 - PriceWidth / 2, 220);
 
-      console.log(`Item pronto: "${itemText}"`);
+      console.log(`Item готов: "${itemText}"`);
       resolve(
         new shopItemImage(
           itemText,
@@ -161,7 +160,7 @@ shopBackground.resize(
   350
 );
 
-const titleText = "LOJA DE ITENS";
+const titleText = "ITEM SHOP";
 const leftWatermark = "";
 const rightWatermark = "";
 const dateText = `DIA ${currentDate[2]}/${currentDate[1]}/${currentDate[0]}`;
@@ -208,7 +207,7 @@ itemImages.sort((a, b) => {
   return b.sortPoints - a.sortPoints + namePoints;
 });
 
-console.log("\n[INFO] Gerando imagem da loja");
+console.log("\n[INFO] Генерация изображения магазина");
 
 itemImages.forEach(({ image }) => {
   if (
@@ -217,8 +216,7 @@ itemImages.forEach(({ image }) => {
   )
     lastLineOffset =
       (256 * (collumsCount - (itemImages.length % collumsCount)) +
-        (collumsCount - (itemImages.length % collumsCount)) * 15) /
-      2;
+        (collumsCount - (itemImages.length % collumsCount)) * 15) / 2;
 
   shopBackground.blit(
     image,
@@ -240,12 +238,13 @@ function saveImage(version = 1) {
     if (fs.existsSync(savePath + fileName)) resolve(await saveImage(version + 1));
     await shopBackground.writeAsync(savePath + fileName);
     resolve(fileName);
-  })
+  });
 }
 
 saveImage().then((savedFile) => {
-  console.log("[INFO] Imagem da loja criada");
+  console.log("[INFO] Изображение магазина создано");
   if (process.env.UPLOAD_TO_DISCORD_WEBHOOK.toLocaleLowerCase() === 'yes') discordWebhook(savePath, savedFile);
   if (process.env.UPLOAD_TO_GITHUB.toLocaleLowerCase() === 'yes') gitUpload(savePath, savedFile);
 });
+
 
