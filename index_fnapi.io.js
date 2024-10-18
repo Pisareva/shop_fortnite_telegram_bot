@@ -230,7 +230,7 @@ itemImages.forEach(({ image }) => {
   } else currentShopColumn += 1;
 });
 
-import fs from 'fs';
+
 import axios from 'axios';
 import FormData from 'form-data';  // Импортируем FormData
 
