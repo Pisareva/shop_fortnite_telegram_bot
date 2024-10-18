@@ -241,10 +241,46 @@ function saveImage(version = 1) {
   });
 }
 
+const axios = require('axios');  // Добавляем axios для отправки запроса
+const fs = require('fs');
+
+// Функция для отправки изображения в Telegram
+async function sendImageToTelegram(filePath) {
+  const formData = {
+    chat_id: process.env.TELEGRAM_CHAT_ID,  // Используем ID чата из переменной окружения
+    photo: fs.createReadStream(filePath),  // Читаем файл изображения
+    caption: "Ежедневный магазин предметов Fortnite"  // Заголовок для изображения
+  };
+
+  try {
+    const response = await axios.post(`https://api.telegram.org/bot${process.env.TELEGRAM_BOT_TOKEN}/sendPhoto`, formData, {
+      headers: {
+        'Content-Type': 'multipart/form-data'
+      }
+    });
+    console.log("Изображение отправлено в Telegram:", response.data);
+  } catch (error) {
+    console.error("Ошибка при отправке изображения в Telegram:", error.response ? error.response.data : error.message);
+  }
+}
+
+// Функция сохранения изображения
+function saveImage(version = 1) {
+  return new Promise(async (resolve, reject) => {
+    const fileName = `${String(currentDate[2]).padStart(2, '0')}-${String(currentDate[1]).padStart(2, '0')}-${String(currentDate[0]).padStart(2, '0')}_v${version}.png`;
+    if (fs.existsSync(savePath + fileName)) resolve(await saveImage(version + 1));
+    await shopBackground.writeAsync(savePath + fileName);
+    resolve(fileName);  // Возвращаем имя файла
+  });
+}
+
+// Сохраняем изображение и отправляем его в Telegram
 saveImage().then((savedFile) => {
-  console.log("[INFO] Изображение магазина создано");
-  //if (process.env.UPLOAD_TO_DISCORD_WEBHOOK.toLocaleLowerCase() === 'yes') discordWebhook(savePath, savedFile);
-  //if (process.env.UPLOAD_TO_GITHUB.toLocaleLowerCase() === 'yes') gitUpload(savePath, savedFile);
+  console.log("[INFO] Изображение магазина создано:", savedFile);
+  
+  // Отправляем изображение в Telegram
+  sendImageToTelegram(`${savePath}${savedFile}`);
 });
+
 
 
