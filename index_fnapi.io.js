@@ -230,6 +230,10 @@ itemImages.forEach(({ image }) => {
   } else currentShopColumn += 1;
 });
 
+import fs from 'fs';
+import axios from 'axios';
+import FormData from 'form-data';  // Импортируем FormData
+
 const savePath = './ImagensGeradas/';
 // Проверим, существует ли директория, если нет — создадим её
 if (!fs.existsSync(savePath)) {
@@ -239,35 +243,25 @@ if (!fs.existsSync(savePath)) {
 function saveImage(version = 1) {
   return new Promise(async (resolve, reject) => {
     const fileName = `${String(currentDate[2]).padStart(2, '0')}-${String(currentDate[1]).padStart(2, '0')}-${String(currentDate[0]).padStart(2, '0')}_v${version}.png`;
-    if (fs.existsSync(savePath + fileName)) resolve(await saveImage(version + 1));
+    if (fs.existsSync(savePath + fileName)) return resolve(await saveImage(version + 1));
     await shopBackground.writeAsync(savePath + fileName);
     resolve(fileName);
   });
 }
 
-import axios from 'axios';  // Импортируем axios
-
-
 // Функция для отправки изображения в Telegram
 async function sendImageToTelegram(filePath) {
-  const formData = {
-    chat_id: process.env.TELEGRAM_CHAT_ID,  // Используем ID чата из переменной окружения
-    photo: fs.createReadStream(filePath),  // Читаем файл изображения
-    caption: "Ежедневный магазин предметов Fortnite"  // Заголовок для изображения
-  };
+  const formData = new FormData();
+  formData.append('chat_id', process.env.TELEGRAM_CHAT_ID);  // Используем ID чата из переменной окружения
+  formData.append('photo', fs.createReadStream(filePath));   // Читаем файл изображения
+  formData.append('caption', "Ежедневный магазин предметов Fortnite");  // Заголовок для изображения
 
   try {
     const response = await axios.post(`https://api.telegram.org/bot${process.env.TELEGRAM_BOT_TOKEN}/sendPhoto`, formData, {
-      headers: {
-        'Content-Type': 'multipart/form-data'
-      }
+      headers: formData.getHeaders()  // Устанавливаем заголовки формы
     });
     console.log("Изображение отправлено в Telegram:", response.data);
   } catch (error) {
     console.error("Ошибка при отправке изображения в Telegram:", error.response ? error.response.data : error.message);
   }
 }
-
-
-
-
