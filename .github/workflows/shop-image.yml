@@ -23,3 +23,8 @@ jobs:
 
     - name: Run script
       run: node index_fnapi.io.js  # Запускаем скрипт для генерации и отправки изображения
+
+env:
+      FNAPI_IO_TOKEN: ${{ secrets.FNAPI_IO_TOKEN }}
+      TELEGRAM_BOT_TOKEN: ${{ secrets.TELEGRAM_BOT_TOKEN }}
+      TELEGRAM_CHAT_ID: ${{ secrets.TELEGRAM_CHAT_ID }}
