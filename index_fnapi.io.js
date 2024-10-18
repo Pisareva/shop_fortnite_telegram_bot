@@ -242,7 +242,7 @@ function saveImage(version = 1) {
 }
 
 const axios = require('axios');  // Добавляем axios для отправки запроса
-const fs = require('fs');
+
 
 // Функция для отправки изображения в Telegram
 async function sendImageToTelegram(filePath) {
