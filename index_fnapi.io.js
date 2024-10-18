@@ -268,22 +268,14 @@ async function sendImageToTelegram(filePath) {
   }
 }
 
-// Функция сохранения изображения
-function saveImage(version = 1) {
-  return new Promise(async (resolve, reject) => {
-    const fileName = `${String(currentDate[2]).padStart(2, '0')}-${String(currentDate[1]).padStart(2, '0')}-${String(currentDate[0]).padStart(2, '0')}_v${version}.png`;
-    if (fs.existsSync(savePath + fileName)) resolve(await saveImage(version + 1));
-    await shopBackground.writeAsync(savePath + fileName);
-    resolve(fileName);  // Возвращаем имя файла
-  });
-}
+
 
 // Сохраняем изображение и отправляем его в Telegram
-saveImage().then((savedFile) => {
-  console.log("[INFO] Изображение магазина создано:", savedFile);
+//saveImage().then((savedFile) => {
+ // console.log("[INFO] Изображение магазина создано:", savedFile);
   
   // Отправляем изображение в Telegram
-  sendImageToTelegram(`${savePath}${savedFile}`);
+  //sendImageToTelegram(`${savePath}${savedFile}`);
 });
 
 
