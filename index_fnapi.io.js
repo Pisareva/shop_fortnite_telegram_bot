@@ -277,6 +277,4 @@ async function sendImageToTelegram(filePath) {
   // Отправляем изображение в Telegram
   //sendImageToTelegram(`${savePath}${savedFile}`);
 });
-
-
-
+}
